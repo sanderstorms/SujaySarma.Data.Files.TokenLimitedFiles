@@ -64,14 +64,13 @@ namespace Internal.Reflection
             }
 
             // see if type has a Parse static method
-
-            MethodInfo? parser = destinationType.GetMethod("Parse", BindingFlags.Public | BindingFlags.Static, new Type[] { sourceType });
+            MethodInfo? parser = destinationType.GetMethod("Parse", BindingFlags.Public | BindingFlags.Static, null, new Type[] { sourceType }, null);
             if (parser != null)
             {
                 return parser.Invoke(null, new object?[] { value });
             }
 
-            parser = destinationType.GetMethod("TryParse", BindingFlags.Public | BindingFlags.Static, new Type[] { sourceType });
+            parser = destinationType.GetMethod("TryParse", BindingFlags.Public | BindingFlags.Static, null, new Type[] { sourceType }, null);
             if (parser != null)
             {
                 object?[]? parameters = new object?[] { value, null };

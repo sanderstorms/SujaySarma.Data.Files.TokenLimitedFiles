@@ -73,16 +73,8 @@ namespace SujaySarma.Data.Files.TokenLimitedFiles
         public TokenLimitedFileReader(string path, Encoding? encoding = default, bool autoDetectEncoding = true, bool leaveStreamOpen = false)
         {
             if (encoding == default) { encoding = Encoding.UTF8; }
-            FileStreamOptions options = new()
-            {
-                Access = FileAccess.Read,
-                Mode = FileMode.Open,
-                Options = FileOptions.SequentialScan,
-                Share = FileShare.Read,
-                BufferSize = 4096
-            };
 
-            _reader = new(path, encoding, autoDetectEncoding, options);
+            _reader = new StreamReader(path, encoding, autoDetectEncoding, 4096);
             _leaveStreamOpenOnDispose = leaveStreamOpen;
         }
 
@@ -135,7 +127,7 @@ namespace SujaySarma.Data.Files.TokenLimitedFiles
             }
             else
             {
-                Array.Clear(LastRowRead);
+                Array.Clear(LastRowRead, 0, LastRowRead.Length);
             }
 
             int fieldCount = -1, quoteCount = 0;

@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
+		<TargetFramework>netcoreapp2.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
 		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
@@ -16,6 +16,7 @@
 		<RepositoryType>Git</RepositoryType>
 		<PackageTags>sdk,csv,comma seperated,tab seperated,delimited,tab delimited,file,reader,parser,writer</PackageTags>
 		<Version>6.0.1</Version>
+        <LangVersion>10.0</LangVersion>
 		<PackageReleaseNotes>6.0.1: Fixed missing nullable option on TokenLimitedFileReader.GetList&lt;T&gt;(table, action). Added TokenLimitedFileReader.Get&lt;T&gt;(table, index) to transform single row.
 
 See https://github.com/sujayvsarma/SujaySarma.Data.Files.TokenLimitedFiles for current information.</PackageReleaseNotes>

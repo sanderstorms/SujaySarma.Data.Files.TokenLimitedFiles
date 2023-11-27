@@ -68,16 +68,8 @@ namespace SujaySarma.Data.Files.TokenLimitedFiles
         public TokenLimitedFileWriter(string path, Encoding? encoding = default, bool leaveStreamOpen = false)
         {
             if (encoding == default) { encoding = Encoding.UTF8; }
-            FileStreamOptions options = new()
-            {
-                Access = FileAccess.Write,
-                Mode = FileMode.Create,
-                Options = FileOptions.None,
-                Share = FileShare.Read,
-                BufferSize = 4096
-            };
 
-            _writer = new(path, encoding, options);
+            _writer = new StreamWriter (path, false, encoding);
             _leaveStreamOpenOnDispose = leaveStreamOpen;
         }
 
@@ -192,7 +184,7 @@ namespace SujaySarma.Data.Files.TokenLimitedFiles
                         colData = (string?)Internal.Reflection.ReflectionUtils.GetAcceptableValue(table.Columns[c].DataType, typeof(string), table.Rows[r][c]);
                     }
 
-                    if ((colData != default) && (quoteAllStrings || (colData.Contains(writer.Delimiter))))
+                    if ((colData != default) && (quoteAllStrings || (colData.IndexOf(writer.Delimiter) >= 0)))
                     {
                         colData = $"{colData}";
                     }
