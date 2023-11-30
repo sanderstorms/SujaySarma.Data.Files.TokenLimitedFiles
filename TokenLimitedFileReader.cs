@@ -6,6 +6,7 @@ using SujaySarma.Data.Files.TokenLimitedFiles.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 using System.IO;
 using System.Text;
 
@@ -22,7 +23,7 @@ namespace SujaySarma.Data.Files.TokenLimitedFiles
         /// <summary>
         /// Field delimiter. Default is comma (',').
         /// </summary>
-        public char Delimiter { get; set; } = ',';
+        public char Delimiter { get; set; } = CultureInfo.InstalledUICulture.TextInfo.ListSeparator [0];
 
         /// <summary>
         /// Returns the current text encoding being used
