@@ -22,7 +22,7 @@ namespace SujaySarma.Data.Files.TokenLimitedFiles
         /// <summary>
         /// Field delimiter. Default is comma (',').
         /// </summary>
-        public char Delimiter { get; init; } = ',';
+        public char Delimiter { get; set; } = ',';
 
         /// <summary>
         /// Returns the current text encoding being used
@@ -342,9 +342,10 @@ namespace SujaySarma.Data.Files.TokenLimitedFiles
         /// <param name="autoDetectEncoding">If set, auto-detects</param>
         /// <param name="leaveStreamOpen">Set to dispose the stream when this object is disposed</param>
         /// <returns>Data from the stream as a DataTable</returns>
-        public static DataTable GetTable(string path, bool hasHeaderRow = true, ulong headerRowIndex = 1, Encoding? encoding = default, bool autoDetectEncoding = true, bool leaveStreamOpen = false)
+        public static DataTable GetTable(string path, char delimiter = ',', bool hasHeaderRow = true, ulong headerRowIndex = 1, Encoding? encoding = default, bool autoDetectEncoding = true, bool leaveStreamOpen = false)
         {
             using TokenLimitedFileReader reader = new(path, encoding, autoDetectEncoding, leaveStreamOpen);
+            reader.Delimiter = delimiter;
             return GetTable(reader, hasHeaderRow, headerRowIndex);
         }
 
@@ -381,10 +382,10 @@ namespace SujaySarma.Data.Files.TokenLimitedFiles
         /// <param name="leaveStreamOpen">Set to dispose the stream when this object is disposed</param>
         /// <param name="action">An action to perform on the DataTable before conversion to list</param>
         /// <returns>Data from the stream as an IEnumerable[T]</returns>
-        public static IEnumerable<T> GetEnumerable<T>(string path, bool hasHeaderRow = true, ulong headerRowIndex = 1, Encoding? encoding = default, bool autoDetectEncoding = true, bool leaveStreamOpen = false, Action<DataTable>? action = null)
+        public static IEnumerable<T> GetEnumerable<T>(string path, char delimiter = ',', bool hasHeaderRow = true, ulong headerRowIndex = 1, Encoding? encoding = default, bool autoDetectEncoding = true, bool leaveStreamOpen = false, Action<DataTable>? action = null)
             where T : class, new()
         {
-            DataTable table = GetTable(path, hasHeaderRow, headerRowIndex, encoding, autoDetectEncoding, leaveStreamOpen);
+            DataTable table = GetTable(path, delimiter, hasHeaderRow, headerRowIndex, encoding, autoDetectEncoding, leaveStreamOpen);
             action?.Invoke(table);
             return OrmUtils.ToEnumerable<T>(table);
         }
@@ -422,10 +423,10 @@ namespace SujaySarma.Data.Files.TokenLimitedFiles
     /// <param name="leaveStreamOpen">Set to dispose the stream when this object is disposed</param>
     /// <param name="action">An action to perform on the DataTable before conversion to list</param>
     /// <returns>Data from the stream as an IList[T]</returns>
-    public static List<T> GetList<T>(string path, bool hasHeaderRow = true, ulong headerRowIndex = 1, Encoding? encoding = default, bool autoDetectEncoding = true, bool leaveStreamOpen = false, Action<DataTable>? action = null)
+    public static List<T> GetList<T>(string path, char delimiter = ',', bool hasHeaderRow = true, ulong headerRowIndex = 1, Encoding? encoding = default, bool autoDetectEncoding = true, bool leaveStreamOpen = false, Action<DataTable>? action = null)
             where T : class, new()
         {
-            DataTable table = GetTable(path, hasHeaderRow, headerRowIndex, encoding, autoDetectEncoding, leaveStreamOpen);
+            DataTable table = GetTable(path, delimiter, hasHeaderRow, headerRowIndex, encoding, autoDetectEncoding, leaveStreamOpen);
             action?.Invoke(table);
             return OrmUtils.ToList<T>(table);
         }
