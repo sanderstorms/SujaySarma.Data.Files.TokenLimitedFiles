@@ -73,7 +73,11 @@ namespace SujaySarma.Data.Files.TokenLimitedFiles
         /// <param name="leaveStreamOpen">Set to dispose the stream when this object is disposed</param>
         public TokenLimitedFileReader(string path, Encoding? encoding = default, bool autoDetectEncoding = true, bool leaveStreamOpen = false)
         {
-            if (encoding == default) { encoding = Encoding.UTF8; }
+            _name = Path.GetFileNameWithoutExtension(path);
+            if (encoding == default)
+            {
+                encoding = Encoding.UTF8;
+            }
 
             _reader = new StreamReader(path, encoding, autoDetectEncoding, 4096);
             _leaveStreamOpenOnDispose = leaveStreamOpen;
@@ -279,7 +283,7 @@ namespace SujaySarma.Data.Files.TokenLimitedFiles
 
         private static DataTable GetTable(TokenLimitedFileReader reader, bool hasHeaderRow = true, ulong headerRowIndex = 1)
         {
-            DataTable table = new("Table 1");
+            DataTable table = new(reader._name);
 
             while (!reader.EndOfStream)
             {
@@ -477,6 +481,7 @@ namespace SujaySarma.Data.Files.TokenLimitedFiles
         private bool END_OF_TABLE = false;
         private readonly bool _leaveStreamOpenOnDispose = false;
         private readonly StreamReader _reader = default!;
+        private readonly string _name = "Table 1";
 
         #endregion
 
