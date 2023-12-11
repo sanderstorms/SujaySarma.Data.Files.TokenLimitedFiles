@@ -58,9 +58,13 @@ namespace SujaySarma.Data.Files.TokenLimitedFiles
         /// <param name="autoDetectEncoding">If set, auto-detects</param>
         /// <param name="bufferSize">Minimum stream buffer size</param>
         /// <param name="leaveStreamOpen">Set to dispose the stream when this object is disposed</param>
-        public TokenLimitedFileReader(Stream stream, Encoding? encoding = default, bool autoDetectEncoding = true, int bufferSize = -1, bool leaveStreamOpen = false)
+        public TokenLimitedFileReader(Stream stream, Encoding? encoding = default, bool autoDetectEncoding = true, int bufferSize = -1, bool leaveStreamOpen = false, char? delimiter = default)
         {
             _reader = new(stream, encoding, autoDetectEncoding, bufferSize, leaveStreamOpen);
+            if (delimiter != default)
+            {
+                Delimiter = delimiter.Value;
+            }
             _leaveStreamOpenOnDispose = leaveStreamOpen;
         }
 
@@ -71,7 +75,7 @@ namespace SujaySarma.Data.Files.TokenLimitedFiles
         /// <param name="encoding">Specific encoding. NULL for autodetect</param>
         /// <param name="autoDetectEncoding">If set, auto-detects</param>
         /// <param name="leaveStreamOpen">Set to dispose the stream when this object is disposed</param>
-        public TokenLimitedFileReader(string path, Encoding? encoding = default, bool autoDetectEncoding = true, bool leaveStreamOpen = false)
+        public TokenLimitedFileReader(string path, Encoding? encoding = default, bool autoDetectEncoding = true, bool leaveStreamOpen = false, char ?delimiter = default)
         {
             _name = Path.GetFileNameWithoutExtension(path);
             if (encoding == default)
@@ -79,6 +83,10 @@ namespace SujaySarma.Data.Files.TokenLimitedFiles
                 encoding = Encoding.UTF8;
             }
 
+            if (delimiter != default)
+            {
+                Delimiter = delimiter.Value;
+            }
             _reader = new StreamReader(path, encoding, autoDetectEncoding, 4096);
             _leaveStreamOpenOnDispose = leaveStreamOpen;
         }
@@ -331,7 +339,7 @@ namespace SujaySarma.Data.Files.TokenLimitedFiles
         /// <param name="bufferSize">Minimum stream buffer size</param>
         /// <param name="leaveStreamOpen">Set to dispose the stream when this object is disposed</param>
         /// <returns>Data from the stream as a DataTable</returns>
-        public static DataTable GetTable(Stream stream, bool hasHeaderRow = true, ulong headerRowIndex = 1, Encoding? encoding = default, bool autoDetectEncoding = true, int bufferSize = -1, bool leaveStreamOpen = false)
+        public static DataTable GetTable(Stream stream, char delimiter = ',', bool hasHeaderRow = true, ulong headerRowIndex = 1, Encoding? encoding = default, bool autoDetectEncoding = true, int bufferSize = -1, bool leaveStreamOpen = false)
         {
             using TokenLimitedFileReader reader = new(stream, encoding, autoDetectEncoding, bufferSize, leaveStreamOpen);
             return GetTable(reader, hasHeaderRow, headerRowIndex);
@@ -367,10 +375,10 @@ namespace SujaySarma.Data.Files.TokenLimitedFiles
         /// <param name="leaveStreamOpen">Set to dispose the stream when this object is disposed</param>
         /// <param name="action">An action to perform on the DataTable before conversion to list</param>
         /// <returns>Data from the stream as an IEnumerable[T]</returns>
-        public static IEnumerable<T> GetEnumerable<T>(Stream stream, bool hasHeaderRow = true, ulong headerRowIndex = 1, Encoding? encoding = default, bool autoDetectEncoding = true, int bufferSize = -1, bool leaveStreamOpen = false, Action<DataTable>? action = null)
+        public static IEnumerable<T> GetEnumerable<T>(Stream stream, char delimiter = ',', bool hasHeaderRow = true, ulong headerRowIndex = 1, Encoding? encoding = default, bool autoDetectEncoding = true, int bufferSize = -1, bool leaveStreamOpen = false, Action<DataTable>? action = null)
             where T : class, new()
         {
-            DataTable table = GetTable(stream, hasHeaderRow, headerRowIndex, encoding, autoDetectEncoding, bufferSize, leaveStreamOpen);
+            DataTable table = GetTable(stream, delimiter, hasHeaderRow, headerRowIndex, encoding, autoDetectEncoding, bufferSize, leaveStreamOpen);
             action?.Invoke(table);
             return OrmUtils.ToEnumerable<T>(table);
         }
@@ -408,10 +416,10 @@ namespace SujaySarma.Data.Files.TokenLimitedFiles
         /// <param name="leaveStreamOpen">Set to dispose the stream when this object is disposed</param>
         /// <param name="action">An action to perform on the DataTable before conversion to list</param>
         /// <returns>Data from the stream as an IList[T]</returns>
-        public static List<T> GetList<T>(Stream stream, bool hasHeaderRow = true, ulong headerRowIndex = 1, Encoding? encoding = default, bool autoDetectEncoding = true, int bufferSize = -1, bool leaveStreamOpen = false, Action<DataTable>? action = null)
+        public static List<T> GetList<T>(Stream stream, char delimiter = ',', bool hasHeaderRow = true, ulong headerRowIndex = 1, Encoding? encoding = default, bool autoDetectEncoding = true, int bufferSize = -1, bool leaveStreamOpen = false, Action<DataTable>? action = null)
             where T : class, new()
         {
-            DataTable table = GetTable(stream, hasHeaderRow, headerRowIndex, encoding, autoDetectEncoding, bufferSize, leaveStreamOpen);
+            DataTable table = GetTable(stream, delimiter, hasHeaderRow, headerRowIndex, encoding, autoDetectEncoding, bufferSize, leaveStreamOpen);
             action?.Invoke(table);
             return OrmUtils.ToList<T>(table);
         }
