@@ -342,6 +342,7 @@ namespace SujaySarma.Data.Files.TokenLimitedFiles
         public static DataTable GetTable(Stream stream, char delimiter = ',', bool hasHeaderRow = true, ulong headerRowIndex = 1, Encoding? encoding = default, bool autoDetectEncoding = true, int bufferSize = -1, bool leaveStreamOpen = false)
         {
             using TokenLimitedFileReader reader = new(stream, encoding, autoDetectEncoding, bufferSize, leaveStreamOpen);
+            reader.Delimiter = delimiter;
             return GetTable(reader, hasHeaderRow, headerRowIndex);
         }
 
